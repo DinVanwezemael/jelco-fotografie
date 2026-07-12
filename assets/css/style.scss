@@ -181,25 +181,52 @@ a {
 }
 
 .button {
-  display: inline-block;
-  padding: 13px 30px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  overflow: hidden;
   border: 1px solid var(--accent);
   border-radius: 8px;
-  color: var(--accent);
+  background: var(--accent);
+  color: var(--bg);
   font-family: "Work Sans", Arial, sans-serif;
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  transition: background 0.2s, color 0.2s, transform 0.15s ease;
+  box-shadow: 0 4px 14px rgba(33, 36, 28, 0.16);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 
-  &:hover {
-    background: var(--accent);
-    color: var(--bg);
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 30%, rgba(245, 241, 232, 0.25) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.6s ease;
   }
 
-  &:active { transform: scale(0.97); }
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(33, 36, 28, 0.26);
+  }
+
+  &:hover::before { transform: translateX(120%); }
+
+  &:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 4px 14px rgba(33, 36, 28, 0.16);
+  }
 }
+
+.button-arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.button:hover .button-arrow { transform: translateX(4px); }
 
 .content-block {
   padding: 20px 0 60px;
@@ -557,13 +584,18 @@ a {
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 
   svg { width: 20px; height: 20px; flex-shrink: 0; }
 
   &:hover {
     background: var(--accent);
     color: var(--bg);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(33, 36, 28, 0.16);
   }
+
+  &:active { transform: translateY(0); }
 }
 
 /* Footer */

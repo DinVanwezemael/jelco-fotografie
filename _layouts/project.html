@@ -47,7 +47,7 @@ layout: default
 <div class="wrap project-nav">
   <a class="back-link" href="{{ '/projecten/' | relative_url }}">&larr; Terug naar portfolio</a>
   {% if next_project %}
-  <a class="button" href="{{ next_project.url | relative_url }}">Volgend project &rarr;</a>
+  <a class="button" href="{{ next_project.url | relative_url }}">Volgend project <span class="button-arrow">&rarr;</span></a>
   {% endif %}
 </div>
 
