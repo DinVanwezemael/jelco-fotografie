@@ -66,28 +66,45 @@ layout: default
     var lightboxImage = lightbox.querySelector('.lightbox-image');
     var lightboxCount = lightbox.querySelector('.lightbox-count');
     var current = 0;
+    var scrollY = 0;
 
     function show(index) {
       current = (index + images.length) % images.length;
       lightboxImage.style.opacity = '0';
-      window.setTimeout(function () {
-        lightboxImage.src = images[current];
+
+      var nextSrc = images[current];
+      var preload = new Image();
+      preload.onload = preload.onerror = function () {
+        lightboxImage.src = nextSrc;
         lightboxCount.textContent = (current + 1) + ' / ' + images.length;
         lightboxImage.style.opacity = '1';
-      }, 120);
+      };
+      preload.src = nextSrc;
     }
 
     function open(index) {
       show(index);
       lightbox.classList.add('open');
       lightbox.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
+
+      // overflow:hidden alone doesn't reliably lock background scroll on iOS
+      // Safari, which can leave this fixed-position overlay stuck mid-repaint
+      // (looking like the photo "won't load"). Pin body in place instead.
+      scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = -scrollY + 'px';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
     }
 
     function close() {
       lightbox.classList.remove('open');
       lightbox.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      window.scrollTo(0, scrollY);
     }
 
     document.querySelectorAll('.gallery-item').forEach(function (item) {
