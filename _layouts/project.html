@@ -1,0 +1,94 @@
+---
+layout: default
+---
+<section class="project-hero" style="background-image: url('{{ page.cover | relative_url }}');">
+  <div class="wrap">
+    <h1>{{ page.title }}</h1>
+  </div>
+</section>
+
+<section class="project-body">
+  <div class="wrap project-layout">
+    <aside class="project-meta">
+      {% if page.categorie %}<p><span>Categorie</span><strong>{{ page.categorie }}</strong></p>{% endif %}
+      {% if page.locatie %}<p><span>Locatie</span><strong>{{ page.locatie }}</strong></p>{% endif %}
+      {% if page.datum %}<p><span>Datum</span><strong>{{ page.datum }}</strong></p>{% endif %}
+    </aside>
+    <div class="project-description">
+      {% if page.samenvatting %}<p class="lead">{{ page.samenvatting }}</p>{% endif %}
+      {{ content }}
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="project-gallery">
+      {% for image in page.images %}
+      <button type="button" class="gallery-item" data-index="{{ forloop.index0 }}">
+        <img src="{{ image | relative_url }}" alt="{{ page.title }}" loading="lazy">
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <a class="back-link" href="{{ '/projecten/' | relative_url }}">&larr; Terug naar portfolio</a>
+</div>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button type="button" class="lightbox-close" aria-label="Sluiten">&times;</button>
+  <button type="button" class="lightbox-prev" aria-label="Vorige foto">&lsaquo;</button>
+  <img class="lightbox-image" alt="{{ page.title }}">
+  <button type="button" class="lightbox-next" aria-label="Volgende foto">&rsaquo;</button>
+  <span class="lightbox-count data-strip"></span>
+</div>
+
+<script>
+  (function () {
+    var images = {{ page.images | jsonify }};
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImage = lightbox.querySelector('.lightbox-image');
+    var lightboxCount = lightbox.querySelector('.lightbox-count');
+    var current = 0;
+
+    function show(index) {
+      current = (index + images.length) % images.length;
+      lightboxImage.src = images[current];
+      lightboxCount.textContent = (current + 1) + ' / ' + images.length;
+    }
+
+    function open(index) {
+      show(index);
+      lightbox.classList.add('open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.gallery-item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        open(parseInt(item.getAttribute('data-index'), 10));
+      });
+    });
+
+    lightbox.querySelector('.lightbox-close').addEventListener('click', close);
+    lightbox.querySelector('.lightbox-prev').addEventListener('click', function () { show(current - 1); });
+    lightbox.querySelector('.lightbox-next').addEventListener('click', function () { show(current + 1); });
+
+    lightbox.addEventListener('click', function (e) {
+      if (e.target === lightbox) close();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (!lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+  })();
+</script>

@@ -1,0 +1,34 @@
+---
+layout: default
+---
+{% assign projects = site.projects | sort: 'datum' | reverse %}
+{% if page.category %}
+  {% assign projects = projects | where: 'categorie', page.category %}
+{% endif %}
+
+<section class="page-hero">
+  <div class="wrap">
+    <h1>{{ page.title }}</h1>
+    <span class="data-strip">{{ projects.size }} project{% if projects.size != 1 %}en{% endif %}</span>
+  </div>
+</section>
+
+<section class="content-block">
+  <div class="wrap">
+    <div class="project-grid">
+      {% for project in projects %}
+      <a class="project-card" href="{{ project.url | relative_url }}">
+        <img src="{{ project.cover | relative_url }}" alt="{{ project.title }}" loading="lazy">
+        {% if project.categorie %}<span class="project-card-tag">{{ project.categorie }}</span>{% endif %}
+        <span class="project-card-info">
+          <span class="project-card-title">{{ project.title }}</span>
+          <span class="data-strip">{{ project.locatie }}{% if project.locatie and project.datum %} &middot; {% endif %}{{ project.datum }}</span>
+        </span>
+      </a>
+      {% endfor %}
+      {% if projects.size == 0 %}
+      <p class="empty-state">Binnenkort meer werk in deze categorie.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>

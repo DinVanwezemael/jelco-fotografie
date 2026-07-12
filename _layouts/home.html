@@ -1,0 +1,38 @@
+---
+layout: default
+---
+<section class="hero">
+  <div class="wrap">
+    <h1>{{ page.title }}</h1>
+    <p class="lead">{{ page.subtitle }}</p>
+    <span class="data-strip">Automotive / Motorsport / Architectuur / Interieur / Prints</span>
+    <a class="button" href="{{ '/projecten/' | relative_url }}">Bekijk portfolio</a>
+  </div>
+</section>
+
+<section class="content-block">
+  <div class="wrap">
+    {{ content }}
+  </div>
+</section>
+
+{% assign projects = site.projects | where: 'uitgelicht', true | sort: 'datum' | reverse %}
+{% if projects.size > 0 %}
+<section class="featured-projects">
+  <div class="wrap">
+    <h2>Uitgelicht</h2>
+    <div class="project-grid">
+      {% for project in projects %}
+      <a class="project-card" href="{{ project.url | relative_url }}">
+        <img src="{{ project.cover | relative_url }}" alt="{{ project.title }}" loading="lazy">
+        {% if project.categorie %}<span class="project-card-tag">{{ project.categorie }}</span>{% endif %}
+        <span class="project-card-info">
+          <span class="project-card-title">{{ project.title }}</span>
+          <span class="data-strip">{{ project.locatie }}{% if project.locatie and project.datum %} &middot; {% endif %}{{ project.datum }}</span>
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

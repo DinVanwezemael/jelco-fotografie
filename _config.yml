@@ -1,0 +1,38 @@
+title: Jelco Fotografie
+description: >-
+  Automotive-, motorsport- en architectuurfotografie door Jelco — plus prints voor aan de muur.
+lang: nl-BE
+url: "https://jelcofotografie.be"
+baseurl: ""
+
+markdown: kramdown
+sass:
+  style: compressed
+
+collections:
+  projects:
+    output: true
+    permalink: /projecten/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: "projects"
+    values:
+      layout: project
+  - scope:
+      path: ""
+    values:
+      layout: page
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - scripts
+  - README.md
+  - CLAUDE.md
+  - vendor
