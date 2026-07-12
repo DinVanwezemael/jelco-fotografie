@@ -18,7 +18,7 @@ layout: default
     <div class="project-grid">
       {% for project in projects %}
       <a class="project-card" href="{{ project.url | relative_url }}">
-        <img src="{{ project.cover | relative_url }}" alt="{{ project.title }}" loading="lazy">
+        <img src="{{ project.images | first | relative_url }}" alt="{{ project.title }}" loading="lazy">
         {% if project.categorie %}<span class="project-card-tag">{{ project.categorie }}</span>{% endif %}
         <span class="project-card-info">
           <span class="project-card-title">{{ project.title }}</span>
