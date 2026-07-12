@@ -445,9 +445,17 @@ a {
   opacity: 0.75;
 }
 
+.project-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+
 .back-link {
   display: inline-block;
-  margin-bottom: 60px;
   color: var(--text-muted);
   font-family: "JetBrains Mono", monospace;
   font-size: 0.8rem;

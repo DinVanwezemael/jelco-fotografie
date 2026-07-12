@@ -31,8 +31,24 @@ layout: default
   </div>
 </section>
 
-<div class="wrap">
+{% assign sorted_projects = site.projects | sort: 'datum' | reverse %}
+{% assign found_current = false %}
+{% assign next_project = nil %}
+{% for project in sorted_projects %}
+  {% if found_current %}
+    {% assign next_project = project %}
+    {% break %}
+  {% endif %}
+  {% if project.url == page.url %}
+    {% assign found_current = true %}
+  {% endif %}
+{% endfor %}
+
+<div class="wrap project-nav">
   <a class="back-link" href="{{ '/projecten/' | relative_url }}">&larr; Terug naar portfolio</a>
+  {% if next_project %}
+  <a class="button" href="{{ next_project.url | relative_url }}">Volgend project &rarr;</a>
+  {% endif %}
 </div>
 
 <div class="lightbox" id="lightbox" aria-hidden="true">
