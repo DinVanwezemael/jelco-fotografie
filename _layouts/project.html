@@ -61,7 +61,9 @@ layout: default
 
 <script>
   (function () {
-    var images = {{ page.images | jsonify }};
+    var images = [
+      {% for image in page.images %}{{ image | relative_url | jsonify }}{% unless forloop.last %},{% endunless %}{% endfor %}
+    ];
     var lightbox = document.getElementById('lightbox');
     var lightboxImage = lightbox.querySelector('.lightbox-image');
     var lightboxCount = lightbox.querySelector('.lightbox-count');
