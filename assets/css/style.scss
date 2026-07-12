@@ -286,7 +286,8 @@ a {
   display: grid;
   grid-template-columns: 200px 1fr;
   gap: 40px;
-  padding: 36px 0;
+  padding-top: 36px;
+  padding-bottom: 36px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -558,6 +559,7 @@ a {
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     flex-direction: column;
+    align-items: flex-start;
     padding: 20px 24px;
     gap: 16px;
 
