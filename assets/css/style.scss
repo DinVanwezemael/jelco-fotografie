@@ -480,6 +480,21 @@ a {
   &:hover { color: var(--accent); }
 }
 
+/* About */
+.about-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 40px;
+  align-items: start;
+  padding-bottom: 60px;
+}
+
+.about-photo {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+}
+
 /* Contact */
 .contact-grid {
   display: grid;
@@ -628,6 +643,8 @@ a {
   .project-grid { grid-template-columns: repeat(2, 1fr); }
   .project-layout { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-photo { max-width: 260px; }
 
   .site-header .site-nav {
     display: flex;
