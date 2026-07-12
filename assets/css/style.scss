@@ -483,7 +483,7 @@ a {
 /* About */
 .about-grid {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 400px 1fr;
   gap: 40px;
   align-items: start;
   padding-bottom: 60px;
@@ -644,7 +644,7 @@ a {
   .project-layout { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
   .about-grid { grid-template-columns: 1fr; }
-  .about-photo { max-width: 260px; }
+  .about-photo { max-width: 380px; }
 
   .site-header .site-nav {
     display: flex;
