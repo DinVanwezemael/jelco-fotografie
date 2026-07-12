@@ -40,6 +40,10 @@ Projects are **not written by hand**. The flow is:
 
 ### Adding a project
 
+Fastest way: copy `assets/projects/_TEMPLATE/` (a real folder with a filled-out `ProjectInfo.md` and usage notes in an HTML comment at the bottom), rename the copy, drop in photos, and edit the fields. `_TEMPLATE` itself has no images so `generate_projects.py` skips it, and it's in `_config.yml`'s `exclude` list so it never ends up in the built site.
+
+Manual steps (what the template automates):
+
 1. Create `assets/projects/<Folder Name>/`
 2. Drop images (`.jpg`, `.jpeg`, `.png`, `.webp`, `.svg`) into the folder — the first one alphabetically becomes the cover.
 3. Optionally add `ProjectInfo.md` with these fields at the top:
