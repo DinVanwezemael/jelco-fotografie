@@ -72,18 +72,20 @@ Langere beschrijving als body...
 
 4. Run `python3 scripts/generate_projects.py` to update `_projects/`.
 
-### CMS admin panel
+### CMS admin panel (lives in a separate repo)
 
-`/admin/` (`admin/index.html` + `admin/config.yml`) is a [Sveltia CMS](https://github.com/sveltia/sveltia-cms) instance — a hosted, form-based editor so a non-technical person can create/edit/delete projects and upload photos from any device's browser, no git or file editing required. Publishing commits directly to `main` via the GitHub API (no draft/PR step), which triggers the normal `pages.yml` deploy automatically.
+Project management for non-technical users is a [Sveltia CMS](https://github.com/sveltia/sveltia-cms) instance — a hosted, form-based editor to create/edit/delete projects and upload photos from any device's browser, no git or file editing required. Publishing commits directly to this repo's `main` via the GitHub API (no draft/PR step), which triggers the normal `pages.yml` deploy automatically.
 
-It requires a one-time manual setup, since GitHub OAuth needs a confidential client-secret exchange that can't happen purely client-side:
+**The admin UI itself is not part of this repo.** It's deliberately kept in a separate, standalone repo (`DinVanwezemael/jelco-fotografie-admin` locally at `../JelcoFotografieAdmin`) containing just two static files (`index.html` + `config.yml`), served via its own GitHub Pages site. Its `config.yml` targets *this* repo via `backend.repo: DinVanwezemael/jelco-fotografie` — that's the only link between the two; nothing here needs to know the admin panel exists. This repo only owns `assets/cms-projects/` (where the CMS uploads photos), kept separate from `assets/projects/` per the collision-safety rules above.
+
+Setup (documented in full in the admin repo's own README):
 
 1. Deploy the [`sveltia/sveltia-cms-auth`](https://github.com/sveltia/sveltia-cms-auth) OAuth proxy to a free Cloudflare Worker (`wrangler deploy`).
-2. Create a GitHub OAuth App at `github.com/settings/applications/new`, with the Authorization callback URL set to `<worker-url>/callback`.
-3. Set `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` (encrypted) / `ALLOWED_DOMAINS` as the Worker's environment variables in the Cloudflare dashboard — never commit these.
-4. Update `backend.base_url` in `admin/config.yml` to the real Worker URL (currently a `REPLACE-ME` placeholder).
+2. Create a GitHub OAuth App with the Authorization callback URL set to `<worker-url>/callback`.
+3. Set `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` (encrypted) / `ALLOWED_DOMAINS` as the Worker's environment variables — `ALLOWED_DOMAINS` must match wherever the *admin repo* ends up served from, not this site's domain.
+4. Update `backend.base_url` in the admin repo's `config.yml` to the real Worker URL.
 
-`admin/` and `assets/cms-projects/` are plain static files/folders — no entries needed in `_config.yml`'s `exclude` list, since they're meant to be included in the built site.
+`assets/cms-projects/` is a plain static folder — no entry needed in `_config.yml`'s `exclude` list, since it's meant to be included in the built site.
 
 ### Layout hierarchy
 
