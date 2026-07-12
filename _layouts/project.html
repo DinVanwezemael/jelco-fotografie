@@ -53,8 +53,12 @@ layout: default
 
     function show(index) {
       current = (index + images.length) % images.length;
-      lightboxImage.src = images[current];
-      lightboxCount.textContent = (current + 1) + ' / ' + images.length;
+      lightboxImage.style.opacity = '0';
+      window.setTimeout(function () {
+        lightboxImage.src = images[current];
+        lightboxCount.textContent = (current + 1) + ' / ' + images.length;
+        lightboxImage.style.opacity = '1';
+      }, 120);
     }
 
     function open(index) {

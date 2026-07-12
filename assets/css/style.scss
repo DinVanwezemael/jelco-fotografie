@@ -15,6 +15,18 @@
 
 * { box-sizing: border-box; }
 
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.22s;
+    animation-timing-function: ease;
+  }
+}
+
 html {
   background: var(--bg);
 }
@@ -77,6 +89,9 @@ a {
     display: flex;
     align-items: center;
     gap: 12px;
+    transition: opacity 0.2s ease;
+
+    &:hover { opacity: 0.75; }
   }
 
   .logo-mark {
@@ -105,6 +120,7 @@ a {
       position: relative;
       padding-bottom: 4px;
       border-bottom: 2px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
     }
 
     a:hover, a.active { color: var(--accent); border-bottom-color: var(--accent); }
@@ -122,6 +138,13 @@ a {
       width: 24px;
       height: 2px;
       background: var(--text);
+      transition: transform 0.25s ease, opacity 0.2s ease;
+    }
+
+    &[aria-expanded="true"] {
+      span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      span:nth-child(2) { opacity: 0; }
+      span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
     }
   }
 }
@@ -168,12 +191,14 @@ a {
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.15s ease;
 
   &:hover {
     background: var(--accent);
     color: var(--bg);
   }
+
+  &:active { transform: scale(0.97); }
 }
 
 .content-block {
@@ -210,6 +235,7 @@ a {
   border-radius: 10px;
   aspect-ratio: 4 / 5;
   background: var(--panel);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   img {
     width: 100%;
@@ -218,14 +244,24 @@ a {
     transition: transform 0.4s ease;
   }
 
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 28px rgba(33, 36, 28, 0.14);
+  }
+
   &:hover img { transform: scale(1.05); }
+
+  &:active { transform: translateY(-1px); }
 
   .project-card-info {
     position: absolute;
     left: 0; right: 0; bottom: 0;
     padding: 14px 16px;
     background: linear-gradient(to top, rgba(10,10,10,0.85), transparent);
+    transition: transform 0.3s ease;
   }
+
+  &:hover .project-card-info { transform: translateY(-2px); }
 
   .project-card-title {
     display: block;
@@ -338,21 +374,35 @@ a {
 
 /* Lightbox */
 .lightbox {
-  display: none;
+  display: flex;
   position: fixed;
   inset: 0;
   z-index: 100;
   background: rgba(15, 15, 13, 0.94);
   align-items: center;
   justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s;
 
-  &.open { display: flex; }
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
 }
 
 .lightbox-image {
   max-width: 90vw;
   max-height: 88vh;
   object-fit: contain;
+  transform: scale(0.97);
+  transition: opacity 0.18s ease, transform 0.25s ease;
+
+  .lightbox.open & {
+    transform: scale(1);
+  }
 }
 
 .lightbox-close,
@@ -552,7 +602,7 @@ a {
   .contact-grid { grid-template-columns: 1fr; }
 
   .site-header .site-nav {
-    display: none;
+    display: flex;
     position: absolute;
     top: 100%;
     left: 0; right: 0;
@@ -562,8 +612,18 @@ a {
     align-items: flex-start;
     padding: 20px 24px;
     gap: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
 
-    &.open { display: flex; }
+    &.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
   }
 
   .site-header .nav-toggle { display: flex; }
