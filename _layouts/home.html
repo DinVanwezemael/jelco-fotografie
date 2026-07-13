@@ -12,8 +12,10 @@ layout: default
 <section class="hero{% if hero_has_intro %} has-photo{% endif %}"{% if hero_has_intro %} style="background-image: url('{{ hero_photo.path | relative_url }}');"{% endif %}>
   <div class="wrap">
     <h1>{{ page.title }}</h1>
+    {% unless hero_has_intro %}
     <p class="lead">{{ page.subtitle }}</p>
     <a class="button" href="{{ '/projecten/' | relative_url }}">Bekijk portfolio <span class="button-arrow">&rarr;</span></a>
+    {% endunless %}
   </div>
 </section>
 
@@ -102,7 +104,7 @@ layout: default
     var STEP = 240;
     var HOLD = 650;
     var GROW = 900;
-    var REVEAL = 800; // 200ms stagger delay + 600ms transition, for .button (last)
+    var REVEAL = 600; // matches the h1 fade/rise transition duration
 
     timers.push(setTimeout(function () {
       overlay.classList.add('frame-in');
