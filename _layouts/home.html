@@ -1,13 +1,144 @@
 ---
 layout: default
 ---
-<section class="hero">
+{% assign hero_images = site.static_files
+   | where_exp: "f", "f.path contains '/assets/images/hero/'"
+   | where_exp: "f", "f.extname == '.jpg' or f.extname == '.jpeg' or f.extname == '.png' or f.extname == '.webp' or f.extname == '.svg'"
+   | sort: "name" %}
+{% assign hero_has_intro = false %}
+{% if hero_images.size == 7 %}{% assign hero_has_intro = true %}{% endif %}
+{% assign hero_photo = hero_images | last %}
+
+<section class="hero{% if hero_has_intro %} has-photo{% endif %}"{% if hero_has_intro %} style="background-image: url('{{ hero_photo.path | relative_url }}');"{% endif %}>
   <div class="wrap">
     <h1>{{ page.title }}</h1>
     <p class="lead">{{ page.subtitle }}</p>
     <a class="button" href="{{ '/projecten/' | relative_url }}">Bekijk portfolio <span class="button-arrow">&rarr;</span></a>
   </div>
 </section>
+
+{% if hero_has_intro %}
+<div class="hero-intro" id="hero-intro" hidden>
+  <div class="hero-intro-frame" id="hero-intro-frame">
+    <div class="hero-intro-strip" id="hero-intro-strip">
+      {% for image in hero_images %}
+      <img src="{{ image.path | relative_url }}" alt="">
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var seen = true;
+    try { seen = !!sessionStorage.getItem('heroIntroSeen'); } catch (e) { seen = true; }
+    if (reduceMotion || seen) return;
+
+    var hero = document.querySelector('.hero');
+    var overlay = document.getElementById('hero-intro');
+    var frame = document.getElementById('hero-intro-frame');
+    var strip = document.getElementById('hero-intro-strip');
+    if (!hero || !overlay || !frame || !strip) return;
+
+    var heroRect = hero.getBoundingClientRect();
+    // Don't grow a box toward an off-screen target (e.g. homepage opened
+    // scrolled to an anchor) -- just show the finished state.
+    if (heroRect.bottom <= 0 || heroRect.top >= window.innerHeight) return;
+
+    var imageCount = strip.children.length;
+    var timers = [];
+    var finished = false;
+    var scrollY = 0;
+
+    function markSeen() {
+      try { sessionStorage.setItem('heroIntroSeen', '1'); } catch (e) {}
+    }
+
+    function unlockScroll() {
+      document.documentElement.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      window.scrollTo(0, scrollY);
+    }
+
+    function finish() {
+      if (finished) return;
+      finished = true;
+      timers.forEach(clearTimeout);
+      timers = [];
+      overlay.removeEventListener('click', skip);
+      window.removeEventListener('wheel', skip);
+      window.removeEventListener('touchmove', skip);
+      overlay.setAttribute('hidden', '');
+      overlay.classList.remove('frame-in', 'growing', 'fading');
+      hero.classList.remove('js-intro-entrance', 'intro-revealed');
+      unlockScroll();
+      markSeen();
+    }
+
+    function skip() {
+      finish();
+    }
+
+    // Lock scroll for the duration of the intro (same pattern as the
+    // lightbox in project.html -- scrollY will normally be 0 here, but
+    // this keeps things correct if the homepage was opened via #anchor).
+    scrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = -scrollY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.documentElement.style.overflow = 'hidden';
+
+    overlay.removeAttribute('hidden');
+    hero.classList.add('js-intro-entrance');
+    overlay.addEventListener('click', skip);
+    window.addEventListener('wheel', skip, { passive: true });
+    window.addEventListener('touchmove', skip, { passive: true });
+
+    var FRAME_IN = 300;
+    var STEP = 150;
+    var HOLD = 400;
+    var GROW = 550;
+    var REVEAL = 610; // 160ms stagger delay + 450ms transition, for .button (last)
+
+    timers.push(setTimeout(function () {
+      overlay.classList.add('frame-in');
+      var frameHeight = frame.clientHeight;
+
+      for (var i = 1; i < imageCount; i++) {
+        (function (step) {
+          timers.push(setTimeout(function () {
+            strip.style.transform = 'translateY(-' + (step * frameHeight) + 'px)';
+          }, step * STEP));
+        })(i);
+      }
+
+      var pushEnd = (imageCount - 1) * STEP;
+
+      timers.push(setTimeout(function () {
+        strip.style.transition = 'none';
+        strip.style.transform = 'none';
+        frame.style.top = heroRect.top + 'px';
+        frame.style.left = heroRect.left + 'px';
+        frame.style.width = heroRect.width + 'px';
+        frame.style.height = heroRect.height + 'px';
+        frame.style.borderRadius = '0px';
+        overlay.classList.add('growing');
+      }, pushEnd + HOLD));
+
+      timers.push(setTimeout(function () {
+        overlay.classList.add('fading');
+        hero.classList.add('intro-revealed');
+      }, pushEnd + HOLD + GROW));
+
+      timers.push(setTimeout(finish, pushEnd + HOLD + GROW + REVEAL));
+    }, FRAME_IN));
+  })();
+</script>
+{% endif %}
 
 <section class="content-block">
   <div class="wrap">

@@ -87,6 +87,14 @@ Setup (documented in full in the admin repo's own README):
 
 `assets/cms-projects/` is a plain static folder — no entry needed in `_config.yml`'s `exclude` list, since it's meant to be included in the built site.
 
+### Homepage intro animation
+
+`_layouts/home.html` has an optional one-time intro sequence, active only when `assets/images/hero/` contains **exactly 7** images (any of `.jpg`/`.jpeg`/`.png`/`.webp`/`.svg`, enumerated at build time via `site.static_files` — no Python involved). Alphabetical filename order = playback order; the 7th/last file also becomes the **permanent** hero background photo behind the title/subtitle/button (via `.hero.has-photo`), whether or not the intro animation itself is currently playing. With anything other than exactly 7 files present (0, or a partial set), the homepage falls back to exactly today's plain hero — nothing breaks, the feature is simply inert until all 7 exist.
+
+Sequence when active: a small centered frame fades in → cycles through all 7 photos via a vertical "push" (each pushes the previous one off, driven by JS setting `translateY` per step, not a CSS `steps()` animation, so there's a single source of truth for the timeline) → holds on the 7th → grows to fill `.hero`'s **measured** bounding box (`getBoundingClientRect()`, not hardcoded viewport units — `.site-header` is `position: sticky`, so `.hero` doesn't actually start at the viewport top; growing to raw `100vw/100vh` would visibly jump at the handoff) → fades out to reveal the real `.hero` underneath, which shows the identical photo at the identical crop, so the handoff reads as seamless. Plays once per `sessionStorage`; skipped entirely (final state shown immediately) on repeat homepage visits in the same session, under `prefers-reduced-motion: reduce`, or if `.hero` isn't currently in the viewport (e.g. homepage opened via `#anchor`). Skippable anytime via click/tap or wheel/touchmove (not `scroll` — the body is `position: fixed` during the intro, so native scroll events never fire).
+
+Keep any future hero photos web-sized (~1600-2000px long edge, well under ~400KB each) — all 7 load eagerly with no lazy-loading safety net, since the intro needs them all available immediately.
+
 ### Layout hierarchy
 
 - `default.html` — base HTML shell (head, sticky header, footer, mobile nav toggle JS)
@@ -99,7 +107,7 @@ Setup (documented in full in the admin repo's own README):
 
 All CSS lives in a single file: `assets/css/style.scss`. No build tool — Jekyll compiles the SCSS directly.
 
-Design system: light "paper" theme (`--bg: #f2ede4`) with a dark olive brand accent (`--accent: #21241c`, sampled from `assets/images/logo.jpg`'s background — also reused as the base `--text` color, so the palette is intentionally near-monochrome cream/olive). Buttons, cards, and tag chips are rounded; hairline dividers throughout. Fonts are Work Sans (headings/nav/buttons at weight 800, body text at regular/medium) and JetBrains Mono (`.data-strip` class — used for category/location/date metadata styled like burned-in capture data). Elements overlaid on photos (project hero title, card title/tag) use the fixed `--on-image` light color instead of `--text`, since they always sit on a dark photo scrim regardless of page theme — don't invent fake camera EXIF or print-edition numbers here; only real front-matter fields (`categorie`/`locatie`/`datum`) are shown. The header logo (`.logo-mark`) renders `assets/images/logo.jpg` next to the text wordmark. Responsive breakpoints at 980 px (nav collapses to hamburger) and 680 px (grids go single-column).
+Design system: white background (`--bg: #ffffff`) with a dark olive brand accent (`--accent: #21241c`, sampled from `assets/images/logo.jpg`'s background — also reused as the base `--text` color). Buttons, cards, and tag chips are rounded; hairline dividers throughout. Fonts are Manrope (headings/nav/buttons at weight 800, body text at regular/medium, loaded via Google Fonts) and JetBrains Mono (`.data-strip` class — used for category/location/date metadata styled like burned-in capture data). Elements overlaid on photos (project hero title, card title/tag) use the fixed `--on-image` light color instead of `--text`, since they always sit on a dark photo scrim regardless of page theme — don't invent fake camera EXIF or print-edition numbers here; only real front-matter fields (`categorie`/`locatie`/`datum`) are shown. The header logo (`.logo-mark`) renders `assets/images/logo.jpg` next to the text wordmark. Responsive breakpoints at 980 px (nav collapses to hamburger) and 680 px (grids go single-column).
 
 ### CI/CD
 

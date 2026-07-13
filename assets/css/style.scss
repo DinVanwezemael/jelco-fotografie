@@ -151,6 +151,7 @@ a {
 
 /* Hero (home) */
 .hero {
+  position: relative;
   padding: 110px 0 60px;
   text-align: center;
 
@@ -169,6 +170,115 @@ a {
   .data-strip {
     display: block;
     margin-bottom: 34px;
+  }
+
+  &.has-photo {
+    min-height: 78vh;
+    min-height: 78dvh;
+    padding: 130px 0;
+    display: flex;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.5);
+      pointer-events: none;
+    }
+
+    .wrap { position: relative; z-index: 1; width: 100%; }
+
+    h1, .lead { color: var(--on-image); }
+    .lead { opacity: 0.92; }
+  }
+
+  &.js-intro-entrance {
+    h1, .lead, .button {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+    h1 { transition-delay: 0s; }
+    .lead { transition-delay: 0.08s; }
+    .button { transition-delay: 0.16s; }
+
+    &.intro-revealed {
+      h1, .lead, .button { opacity: 1; transform: translateY(0); }
+    }
+  }
+}
+
+/* Homepage intro animation */
+.hero-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.35s ease, visibility 0.35s;
+
+  &[hidden] { display: none; }
+
+  &.fading {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+.hero-intro-frame {
+  --intro-frame-w: 140px;
+  --intro-frame-h: 180px;
+  position: fixed;
+  top: calc(50% - (var(--intro-frame-h) / 2));
+  left: calc(50% - (var(--intro-frame-w) / 2));
+  width: var(--intro-frame-w);
+  height: var(--intro-frame-h);
+  border-radius: 14px;
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.3s ease, transform 0.3s ease,
+              top 0.55s ease, left 0.55s ease,
+              width 0.55s ease, height 0.55s ease,
+              border-radius 0.55s ease;
+
+  .hero-intro.frame-in & {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero-intro-strip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.11s ease;
+
+  img {
+    display: block;
+    width: 100%;
+    height: var(--intro-frame-h);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .hero-intro.growing & img:last-child {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-intro.growing & img:not(:last-child) {
+    display: none;
   }
 }
 
@@ -684,4 +794,5 @@ a {
 
 @media (prefers-reduced-motion: reduce) {
   .project-card img { transition: none; }
+  .hero-intro { display: none !important; }
 }
