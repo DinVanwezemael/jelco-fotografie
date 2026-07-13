@@ -108,12 +108,11 @@ layout: default
 
     timers.push(setTimeout(function () {
       overlay.classList.add('frame-in');
-      var frameHeight = frame.clientHeight;
 
       for (var i = 1; i < imageCount; i++) {
         (function (step) {
           timers.push(setTimeout(function () {
-            strip.style.transform = 'translateY(-' + (step * frameHeight) + 'px)';
+            strip.children[step].style.transform = 'translateY(0)';
           }, step * STEP));
         })(i);
       }
@@ -121,8 +120,6 @@ layout: default
       var pushEnd = (imageCount - 1) * STEP;
 
       timers.push(setTimeout(function () {
-        strip.style.transition = 'none';
-        strip.style.transform = 'none';
         frame.style.top = heroRect.top + 'px';
         frame.style.left = heroRect.left + 'px';
         frame.style.width = heroRect.width + 'px';

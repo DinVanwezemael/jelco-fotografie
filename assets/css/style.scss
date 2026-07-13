@@ -254,25 +254,19 @@ a {
 
 .hero-intro-strip {
   position: relative;
-  display: flex;
-  flex-direction: column;
   width: 100%;
   height: 100%;
-  transition: transform 0.2s var(--ease-smooth);
 
   img {
-    display: block;
-    width: 100%;
-    height: var(--intro-frame-h);
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-
-  .hero-intro.growing & img:last-child {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    transform: translateY(100%);
+    transition: transform 0.2s var(--ease-smooth);
+
+    &:first-child { transform: translateY(0); }
   }
 
   .hero-intro.growing & img:not(:last-child) {
