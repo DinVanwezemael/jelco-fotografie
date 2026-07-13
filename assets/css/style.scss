@@ -37,12 +37,12 @@ body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Manrope", Arial, sans-serif;
   line-height: 1.6;
 }
 
 h1, h2, h3 {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Manrope", Arial, sans-serif;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: -0.01em;
@@ -101,7 +101,7 @@ a {
   }
 
   .logo-text {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Manrope", Arial, sans-serif;
     font-size: 1.4rem;
     font-weight: 800;
     letter-spacing: 0.01em;
@@ -110,7 +110,7 @@ a {
   .site-nav {
     display: flex;
     gap: 22px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Manrope", Arial, sans-serif;
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -190,7 +190,7 @@ a {
   border-radius: 8px;
   background: var(--accent);
   color: var(--bg);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Manrope", Arial, sans-serif;
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -279,7 +279,7 @@ a {
   .project-card-title {
     display: block;
     color: var(--on-image);
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Manrope", Arial, sans-serif;
     font-weight: 700;
     font-size: 1.1rem;
     text-transform: uppercase;
@@ -532,7 +532,7 @@ a {
     background: var(--panel);
     border: 1px solid var(--border);
     color: var(--text);
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Manrope", Arial, sans-serif;
     font-size: 0.95rem;
     padding: 12px 14px;
     resize: vertical;
@@ -585,7 +585,7 @@ a {
   padding: 12px 14px;
   border-radius: 8px;
   background: var(--panel);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Manrope", Arial, sans-serif;
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
