@@ -425,6 +425,7 @@ a {
 .lightbox-prev,
 .lightbox-next {
   position: absolute;
+  z-index: 1;
   border: none;
   background: none;
   color: var(--on-image);
@@ -454,6 +455,7 @@ a {
 
 .lightbox-count {
   position: absolute;
+  z-index: 1;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
