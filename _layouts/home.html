@@ -6,7 +6,7 @@ layout: default
    | where_exp: "f", "f.extname == '.jpg' or f.extname == '.jpeg' or f.extname == '.png' or f.extname == '.webp' or f.extname == '.svg'"
    | sort: "name" %}
 {% assign hero_has_intro = false %}
-{% if hero_images.size == 7 %}{% assign hero_has_intro = true %}{% endif %}
+{% if hero_images.size > 0 %}{% assign hero_has_intro = true %}{% endif %}
 {% assign hero_photo = hero_images | last %}
 
 <section class="hero{% if hero_has_intro %} has-photo{% endif %}"{% if hero_has_intro %} style="background-image: url('{{ hero_photo.path | relative_url }}');"{% endif %}>
