@@ -98,11 +98,11 @@ layout: default
     window.addEventListener('wheel', skip, { passive: true });
     window.addEventListener('touchmove', skip, { passive: true });
 
-    var FRAME_IN = 300;
-    var STEP = 150;
-    var HOLD = 400;
-    var GROW = 550;
-    var REVEAL = 610; // 160ms stagger delay + 450ms transition, for .button (last)
+    var FRAME_IN = 500;
+    var STEP = 240;
+    var HOLD = 650;
+    var GROW = 900;
+    var REVEAL = 800; // 200ms stagger delay + 600ms transition, for .button (last)
 
     timers.push(setTimeout(function () {
       overlay.classList.add('frame-in');
@@ -125,7 +125,6 @@ layout: default
         frame.style.left = heroRect.left + 'px';
         frame.style.width = heroRect.width + 'px';
         frame.style.height = heroRect.height + 'px';
-        frame.style.borderRadius = '0px';
         overlay.classList.add('growing');
       }, pushEnd + HOLD));
 

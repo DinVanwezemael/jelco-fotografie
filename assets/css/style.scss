@@ -11,6 +11,8 @@
   /* Fixed light color for text/tags sitting over a dark photo scrim —
      independent of the page theme, since photos vary in tone. */
   --on-image: #f5f1e8;
+
+  --ease-smooth: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 * { box-sizing: border-box; }
@@ -199,11 +201,11 @@ a {
     h1, .lead, .button {
       opacity: 0;
       transform: translateY(16px);
-      transition: opacity 0.45s ease, transform 0.45s ease;
+      transition: opacity 0.6s var(--ease-smooth), transform 0.6s var(--ease-smooth);
     }
     h1 { transition-delay: 0s; }
-    .lead { transition-delay: 0.08s; }
-    .button { transition-delay: 0.16s; }
+    .lead { transition-delay: 0.1s; }
+    .button { transition-delay: 0.2s; }
 
     &.intro-revealed {
       h1, .lead, .button { opacity: 1; transform: translateY(0); }
@@ -220,7 +222,7 @@ a {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity 0.35s ease, visibility 0.35s;
+  transition: opacity 0.6s var(--ease-smooth), visibility 0.6s;
 
   &[hidden] { display: none; }
 
@@ -232,21 +234,19 @@ a {
 }
 
 .hero-intro-frame {
-  --intro-frame-w: 140px;
-  --intro-frame-h: 180px;
+  --intro-frame-w: 200px;
+  --intro-frame-h: 260px;
   position: fixed;
   top: calc(50% - (var(--intro-frame-h) / 2));
   left: calc(50% - (var(--intro-frame-w) / 2));
   width: var(--intro-frame-w);
   height: var(--intro-frame-h);
-  border-radius: 14px;
   overflow: hidden;
   opacity: 0;
   transform: scale(0.92);
-  transition: opacity 0.3s ease, transform 0.3s ease,
-              top 0.55s ease, left 0.55s ease,
-              width 0.55s ease, height 0.55s ease,
-              border-radius 0.55s ease;
+  transition: opacity 0.5s var(--ease-smooth), transform 0.5s var(--ease-smooth),
+              top 0.9s var(--ease-smooth), left 0.9s var(--ease-smooth),
+              width 0.9s var(--ease-smooth), height 0.9s var(--ease-smooth);
 
   .hero-intro.frame-in & {
     opacity: 1;
@@ -260,7 +260,7 @@ a {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  transition: transform 0.11s ease;
+  transition: transform 0.2s var(--ease-smooth);
 
   img {
     display: block;
