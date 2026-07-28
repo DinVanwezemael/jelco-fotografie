@@ -4,6 +4,13 @@ layout: default
 <section class="project-hero" style="background-image: url('{{ page.images | first | relative_url }}');">
   <div class="wrap">
     <h1>{{ page.title }}</h1>
+    {% if page.categorie or page.locatie or page.datum %}
+    <div class="hero-glass-meta data-strip">
+      {% if page.categorie %}<span>{{ page.categorie }}</span>{% endif %}
+      {% if page.locatie %}<span>{{ page.locatie }}</span>{% endif %}
+      {% if page.datum %}<span>{{ page.datum }}</span>{% endif %}
+    </div>
+    {% endif %}
   </div>
 </section>
 
