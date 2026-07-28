@@ -16,6 +16,20 @@
 
   --glass-blur: 14px;
   --glass-saturate: 150%;
+
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+
+  /* Atmospheric grade used on photo heroes — anchored on --accent and
+     --border so it reads as this site's palette, not an imported one. */
+  --gradient-atmosphere: linear-gradient(
+    180deg,
+    #17140d 0%,
+    #21241c 14%,
+    #46566b 40%,
+    #93a8bf 62%,
+    #d8cfbd 84%,
+    #ffffff 100%
+  );
 }
 
 * { box-sizing: border-box; }
@@ -37,6 +51,32 @@
     animation-duration: 0.22s;
     animation-timing-function: ease;
   }
+
+  .page-hero h1 {
+    view-transition-name: page-title;
+  }
+
+  ::view-transition-old(page-title) {
+    animation: page-title-out 0.32s var(--ease-smooth) forwards;
+  }
+
+  ::view-transition-new(page-title) {
+    animation: page-title-in 0.32s var(--ease-smooth) forwards;
+  }
+
+  @keyframes page-title-out {
+    to {
+      transform: translateY(-16px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes page-title-in {
+    from {
+      transform: translateY(16px);
+      opacity: 0;
+    }
+  }
 }
 
 html {
@@ -54,9 +94,8 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: "Manrope", Arial, sans-serif;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-weight: 400;
   letter-spacing: -0.01em;
   line-height: 1.05;
 }
@@ -82,13 +121,16 @@ a {
 
 /* Header */
 .site-header {
-  @include glass(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.4));
-  position: sticky;
+  --glass-blur: 26px;
+  --glass-saturate: 180%;
+  @include glass(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.35));
+  position: fixed;
   top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 10;
   width: calc(100% - 48px);
   max-width: 1160px;
-  margin: 16px auto 0;
   border-radius: 999px;
   box-shadow: 0 8px 30px rgba(33, 36, 28, 0.12);
 
@@ -128,21 +170,20 @@ a {
 
   .site-nav {
     display: flex;
-    gap: 22px;
+    align-items: center;
+    gap: 4px;
     font-family: "Manrope", Arial, sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
 
     a {
-      position: relative;
-      padding-bottom: 4px;
-      border-bottom: 2px solid transparent;
-      transition: color 0.2s ease, border-color 0.2s ease;
+      padding: 8px 14px;
+      border-radius: 999px;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-    a:hover, a.active { color: var(--accent); border-bottom-color: var(--accent); }
+    a:hover, a.active { color: var(--accent); background-color: rgba(33, 36, 28, 0.08); }
   }
 
   .nav-toggle {
@@ -200,11 +241,21 @@ a {
     background-size: cover;
     background-position: center;
 
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.35);
+      pointer-events: none;
+    }
+
     &::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(8, 8, 8, 0.5);
+      background: var(--gradient-atmosphere);
+      opacity: 0.45;
+      mix-blend-mode: multiply;
       pointer-events: none;
     }
 
@@ -292,7 +343,7 @@ a {
 }
 
 .page-hero {
-  padding: 60px 0 26px;
+  padding: 130px 0 26px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 30px;
 
@@ -306,14 +357,13 @@ a {
   gap: 8px;
   padding: 14px 32px;
   border: 1px solid var(--accent);
-  border-radius: 8px;
+  border-radius: 999px;
   background: var(--accent);
   color: var(--bg);
   font-family: "Manrope", Arial, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.01em;
   box-shadow: 0 4px 14px rgba(33, 36, 28, 0.16);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 
@@ -433,6 +483,15 @@ a {
   display: flex;
   align-items: flex-end;
   position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-atmosphere);
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
 
   &::after {
     content: "";
@@ -725,14 +784,13 @@ a {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
-  border-radius: 8px;
+  padding: 12px 18px;
+  border-radius: 999px;
   background: var(--panel);
   font-family: "Manrope", Arial, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.01em;
   transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 
   svg { width: 20px; height: 20px; flex-shrink: 0; }
@@ -831,7 +889,6 @@ a {
 
   .site-header {
     width: calc(100% - 24px);
-    margin-top: 10px;
     top: 10px;
   }
 
