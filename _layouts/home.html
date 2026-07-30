@@ -163,4 +163,26 @@ layout: default
     </div>
   </div>
 </section>
+<script>
+  (function () {
+    document.querySelectorAll('.featured-projects .project-card').forEach(function (card) {
+      var tag = card.querySelector('.project-card-tag');
+      if (!tag) return;
+      card.addEventListener('mousemove', function (e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left + 18;
+        var y = e.clientY - rect.top + 18;
+        tag.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+      });
+    });
+  })();
+</script>
 {% endif %}
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>Klaar voor een shoot?</h2>
+    <p class="lead">Van studioshoot tot circuitdag — laten we het plannen.</p>
+    <a class="button" href="{{ '/contact/' | relative_url }}">Neem contact op <span class="button-arrow">&rarr;</span></a>
+  </div>
+</section>

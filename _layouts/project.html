@@ -4,11 +4,9 @@ layout: default
 <section class="project-hero" style="background-image: url('{{ page.images | first | relative_url }}');">
   <div class="wrap">
     <h1>{{ page.title }}</h1>
-    {% if page.categorie or page.locatie or page.datum %}
+    {% if page.datum %}
     <div class="hero-glass-meta data-strip">
-      {% if page.categorie %}<span>{{ page.categorie }}</span>{% endif %}
-      {% if page.locatie %}<span>{{ page.locatie }}</span>{% endif %}
-      {% if page.datum %}<span>{{ page.datum }}</span>{% endif %}
+      <span>{{ page.datum }}</span>
     </div>
     {% endif %}
   </div>
@@ -76,39 +74,104 @@ layout: default
     var lightboxCount = lightbox.querySelector('.lightbox-count');
     var current = 0;
     var scrollY = 0;
+    var closeMs = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--modal-close-dur')
+    ) || 150;
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var modalOpenDur = getComputedStyle(document.documentElement).getPropertyValue('--modal-open-dur').trim() || '250ms';
+    var modalEase = getComputedStyle(document.documentElement).getPropertyValue('--modal-ease').trim() || 'ease';
+
+    function loadImage(src) {
+      return new Promise(function (resolve) {
+        var preload = new Image();
+        preload.onload = preload.onerror = resolve;
+        preload.src = src;
+      });
+    }
 
     function show(index) {
       current = (index + images.length) % images.length;
       lightboxImage.style.opacity = '0';
 
-      var nextSrc = images[current];
-      var preload = new Image();
-      preload.onload = preload.onerror = function () {
-        lightboxImage.src = nextSrc;
+      loadImage(images[current]).then(function () {
+        lightboxImage.src = images[current];
         lightboxCount.textContent = (current + 1) + ' / ' + images.length;
         lightboxImage.style.opacity = '1';
-      };
-      preload.src = nextSrc;
+      });
     }
 
-    function open(index) {
-      show(index);
-      lightbox.classList.add('open');
+    // Flies the clicked gallery thumbnail into the fullscreen lightbox
+    // position instead of just cross-fading in. The lightbox container's
+    // own scale-in is suppressed for this path (inline styles win over the
+    // CSS class) so only the photo itself is seen moving.
+    function openFromThumb(index, thumbImg) {
+      current = index;
+      lightboxCount.textContent = (current + 1) + ' / ' + images.length;
       lightbox.setAttribute('aria-hidden', 'false');
 
-      // overflow:hidden alone doesn't reliably lock background scroll on iOS
-      // Safari, which can leave this fixed-position overlay stuck mid-repaint
-      // (looking like the photo "won't load"). Pin body in place instead.
       scrollY = window.scrollY;
       document.body.style.position = 'fixed';
       document.body.style.top = -scrollY + 'px';
       document.body.style.left = '0';
       document.body.style.right = '0';
+
+      if (reduceMotion || !thumbImg) {
+        lightbox.classList.remove('is-closing');
+        lightbox.classList.add('is-open');
+        loadImage(images[current]).then(function () { lightboxImage.src = images[current]; });
+        return;
+      }
+
+      var startRect = thumbImg.getBoundingClientRect();
+
+      lightbox.classList.remove('is-closing');
+      lightbox.style.transition = 'opacity ' + modalOpenDur + ' ' + modalEase;
+      lightbox.style.transform = 'scale(1)';
+      lightbox.classList.add('is-open');
+
+      lightboxImage.style.opacity = '0';
+
+      loadImage(images[current]).then(function () {
+        lightboxImage.src = images[current];
+        lightboxImage.style.opacity = '1';
+
+        requestAnimationFrame(function () {
+          var endRect = lightboxImage.getBoundingClientRect();
+          if (!endRect.width || !endRect.height) return;
+
+          var scaleX = startRect.width / endRect.width;
+          var scaleY = startRect.height / endRect.height;
+          var translateX = (startRect.left + startRect.width / 2) - (endRect.left + endRect.width / 2);
+          var translateY = (startRect.top + startRect.height / 2) - (endRect.top + endRect.height / 2);
+
+          lightboxImage.style.transformOrigin = 'center';
+          lightboxImage.style.transition = 'none';
+          lightboxImage.style.transform =
+            'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + scaleX + ', ' + scaleY + ')';
+
+          void lightboxImage.offsetWidth;
+
+          lightboxImage.style.transition = 'transform 0.45s ' + modalEase;
+          lightboxImage.style.transform = 'translate(0, 0) scale(1, 1)';
+
+          lightboxImage.addEventListener('transitionend', function cleanup() {
+            lightboxImage.style.transition = '';
+            lightboxImage.style.transform = '';
+            lightboxImage.style.transformOrigin = '';
+            lightbox.style.transition = '';
+            lightbox.style.transform = '';
+            lightboxImage.removeEventListener('transitionend', cleanup);
+          });
+        });
+      });
     }
 
     function close() {
-      lightbox.classList.remove('open');
+      lightbox.classList.remove('is-open');
+      lightbox.classList.add('is-closing');
       lightbox.setAttribute('aria-hidden', 'true');
+      setTimeout(function () { lightbox.classList.remove('is-closing'); }, closeMs);
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.left = '';
@@ -118,7 +181,7 @@ layout: default
 
     document.querySelectorAll('.gallery-item').forEach(function (item) {
       item.addEventListener('click', function () {
-        open(parseInt(item.getAttribute('data-index'), 10));
+        openFromThumb(parseInt(item.getAttribute('data-index'), 10), item.querySelector('img'));
       });
     });
 
@@ -131,7 +194,7 @@ layout: default
     });
 
     document.addEventListener('keydown', function (e) {
-      if (!lightbox.classList.contains('open')) return;
+      if (!lightbox.classList.contains('is-open')) return;
       if (e.key === 'Escape') close();
       if (e.key === 'ArrowLeft') show(current - 1);
       if (e.key === 'ArrowRight') show(current + 1);

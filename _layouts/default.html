@@ -7,7 +7,7 @@
   <link rel="icon" type="image/jpeg" href="{{ '/assets/images/logo.jpg' | relative_url }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;500;600&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
 <body>
@@ -58,12 +58,31 @@
   </footer>
 
   <script>
-    document.querySelector('.nav-toggle').addEventListener('click', function () {
+    (function () {
+      var toggle = document.querySelector('.nav-toggle');
       var nav = document.querySelector('.site-nav');
-      var expanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', String(!expanded));
-      nav.classList.toggle('open');
-    });
+      var closeMs = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue('--dropdown-close-dur')
+      ) || 150;
+
+      function openNav() {
+        nav.classList.remove('is-closing');
+        nav.classList.add('is-open');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeNav() {
+        nav.classList.remove('is-open');
+        nav.classList.add('is-closing');
+        toggle.setAttribute('aria-expanded', 'false');
+        setTimeout(function () { nav.classList.remove('is-closing'); }, closeMs);
+      }
+
+      toggle.addEventListener('click', function () {
+        var expanded = toggle.getAttribute('aria-expanded') === 'true';
+        if (expanded) { closeNav(); } else { openNav(); }
+      });
+    })();
   </script>
 </body>
 </html>
