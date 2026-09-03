@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Static Jekyll website for **Jelco Fotografie**, a Belgian photographer specializing in automotive, motorsport, architecture, and interior photography, plus print sales. Hosted on GitHub Pages at `https://jelcofotografie.be`. The site is in Dutch (nl-BE).
 
-Portfolio is organized into five fixed categories, each with its own nav link and listing page at `/projecten/<slug>/`: Automotive, Motorsport, Architectuur, Interieur, Prints. A project's `Categorie` field in `ProjectInfo.md` must exactly match one of these five values (case-sensitive) to appear on its category page — otherwise it's only visible on the general `/projecten/` overview.
+Portfolio is organized into seven fixed categories, each with its own nav link and listing page at `/projecten/<slug>/`: Automotive, Motorsport, Architectuur, Interieur, Prints, Varia, Klanten en partners. A project's `Categorie` field in `ProjectInfo.md` must exactly match one of these seven values (case-sensitive) to appear on its category page — otherwise it's only visible on the general `/projecten/` overview.
 
 ## Commands
 
@@ -43,7 +43,7 @@ Jekyll renders the `_projects/` collection into `/projecten/:name/` URLs regardl
 
 **Naming rule:** avoid giving a technical-pipeline project and a CMS-authored project the same title/slug. The marker system stops the script from ever overwriting a CMS file, but nothing stops the CMS from overwriting a script-generated file if the slugs collide (it commits directly via the GitHub API with no knowledge of our marker convention) — whichever pipeline writes second simply wins. This is a documented, accepted edge case rather than something enforced in code, since blocking on it would require a review/approval gate, which conflicts with "publish immediately."
 
-Both pipelines produce the same front-matter schema (`title`, `categorie`, `locatie`, `datum`, `samenvatting`, `uitgelicht`, `images`). There is **no stored `cover` field** — it's derived in Liquid as `page.images | first` wherever needed, so both pipelines only need to get the image order right, never a separate field.
+Both pipelines produce the same front-matter schema (`title`, `categorie`, `datum`, `samenvatting`, `uitgelicht`, `images`). There is **no stored `cover` field** — it's derived in Liquid as `page.images | first` wherever needed, so both pipelines only need to get the image order right, never a separate field.
 
 ### Adding a project
 
@@ -58,7 +58,6 @@ Manual steps (what the template automates):
 ```markdown
 # Titel van het project
 Categorie: Automotive
-Locatie: Gent
 Datum: 2026-05-16
 Samenvatting: Korte omschrijving van het project.
 Uitgelicht: Ja
@@ -66,9 +65,9 @@ Uitgelicht: Ja
 Langere beschrijving als body...
 ```
 
-`Categorie` must be one of: `Automotive`, `Motorsport`, `Architectuur`, `Interieur`, `Prints`.
+`Categorie` must be one of: `Automotive`, `Motorsport`, `Architectuur`, `Interieur`, `Prints`, `Varia`, `Klanten en partners`.
 
-`Uitgelicht` (`Ja`/`Yes`/`True`/`1`, case-insensitive) controls whether the project appears in the "Uitgelicht" section on the homepage — this is a manual curation flag, not automatic (the homepage does **not** just show the most recent projects). Omit it, or set it to anything else, to keep a project off the homepage; it's still reachable via its category page and `/projecten/`.
+`Uitgelicht` (`Ja`/`Yes`/`True`/`1`, case-insensitive) controls whether the project appears in the curated photo grid on the homepage (an unlabeled section, formerly headed "Uitgelicht") — this is a manual curation flag, not automatic (the homepage does **not** just show the most recent projects). Omit it, or set it to anything else, to keep a project off the homepage; it's still reachable via its category page and `/projecten/`.
 
 4. Run `python3 scripts/generate_projects.py` to update `_projects/`.
 
@@ -107,7 +106,7 @@ Keep any hero photos web-sized (~1600-2000px long edge, well under ~400KB each) 
 
 All CSS lives in a single file: `assets/css/style.scss`. No build tool — Jekyll compiles the SCSS directly.
 
-Design system: white background (`--bg: #ffffff`) with a dark olive brand accent (`--accent: #21241c`, sampled from `assets/images/logo.jpg`'s background — also reused as the base `--text` color). Buttons, cards, and tag chips are rounded; hairline dividers throughout. Fonts are Manrope (headings/nav/buttons at weight 800, body text at regular/medium, loaded via Google Fonts) and JetBrains Mono (`.data-strip` class — used for category/location/date metadata styled like burned-in capture data). Elements overlaid on photos (project hero title, card title/tag) use the fixed `--on-image` light color instead of `--text`, since they always sit on a dark photo scrim regardless of page theme — don't invent fake camera EXIF or print-edition numbers here; only real front-matter fields (`categorie`/`locatie`/`datum`) are shown. The header logo (`.logo-mark`) renders `assets/images/logo.jpg` next to the text wordmark. Responsive breakpoints at 980 px (nav collapses to hamburger) and 680 px (grids go single-column).
+Design system: white background (`--bg: #ffffff`) with a dark olive brand accent (`--accent: #21241c`, sampled from `assets/images/logo.jpg`'s background — also reused as the base `--text` color). Buttons, cards, and tag chips are rounded; hairline dividers throughout. A single font family, Manrope, is used everywhere — headings/nav/buttons at weight 800, body text at regular/medium, metadata (`.data-strip` class — category/date, styled uppercase with wide letter-spacing and a muted color) at regular weight — loaded via Google Fonts. Elements overlaid on photos (project hero title, card title/tag) use the fixed `--on-image` light color instead of `--text`, since they always sit on a dark photo scrim regardless of page theme — don't invent fake camera EXIF or print-edition numbers here; only real front-matter fields (`categorie`/`datum`) are shown. The header logo (`.logo-mark`) renders `assets/images/logo.jpg` next to the text wordmark. Responsive breakpoints at 980 px (nav collapses to hamburger) and 680 px (grids go single-column).
 
 ### CI/CD
 

@@ -1,6 +1,5 @@
 # Titel van het project
 Categorie: Automotive
-Locatie: Stad
 Datum: JJJJ-MM-DD
 Samenvatting: Korte omschrijving voor de projectkaart en meta-description.
 Uitgelicht: Nee
@@ -16,7 +15,7 @@ GEBRUIK VAN DEZE TEMPLATE:
    automatisch opgepikt — je hoeft ze nergens apart op te lijsten. De eerste foto
    (alfabetisch) wordt de cover.
 4. Categorie moet exact een van deze zijn: Automotive, Motorsport, Architectuur,
-   Interieur, Prints.
+   Interieur, Prints, Varia, Klanten en partners.
 5. Datum in JJJJ-MM-DD formaat, anders sorteert de site projecten verkeerd.
 6. Uitgelicht: Ja zet het project op de homepage; Nee (of het veld weglaten) houdt
    het er vanaf — het blijft wel bereikbaar via zijn categoriepagina en /projecten/.

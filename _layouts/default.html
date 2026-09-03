@@ -7,7 +7,7 @@
   <link rel="icon" type="image/jpeg" href="{{ '/assets/images/logo.jpg' | relative_url }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
 <body>
@@ -27,6 +27,8 @@
         <a href="{{ '/projecten/architectuur/' | relative_url }}" {% if page.category == 'Architectuur' %}class="active"{% endif %}>Architectuur</a>
         <a href="{{ '/projecten/interieur/' | relative_url }}" {% if page.category == 'Interieur' %}class="active"{% endif %}>Interieur</a>
         <a href="{{ '/projecten/prints/' | relative_url }}" {% if page.category == 'Prints' %}class="active"{% endif %}>Prints</a>
+        <a href="{{ '/projecten/varia/' | relative_url }}" {% if page.category == 'Varia' %}class="active"{% endif %}>Varia</a>
+        <a href="{{ '/projecten/klanten-en-partners/' | relative_url }}" {% if page.category == 'Klanten en partners' %}class="active"{% endif %}>Klanten en partners</a>
         <a href="{{ '/over-mij/' | relative_url }}">Over mij</a>
         <a href="{{ '/contact/' | relative_url }}">Contact</a>
       </nav>

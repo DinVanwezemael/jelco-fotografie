@@ -47,7 +47,7 @@
   --learn-out: 350ms;
   --learn-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-display: "Manrope", Arial, sans-serif;
 
   /* Atmospheric grade used on photo heroes — anchored on --accent and
      --border so it reads as this site's palette, not an imported one. */
@@ -142,7 +142,7 @@ a {
 }
 
 .data-strip {
-  font-family: "JetBrains Mono", monospace;
+  font-family: "Manrope", Arial, sans-serif;
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -424,9 +424,8 @@ a {
 
 /* Project grid */
 .featured-projects {
+  padding-top: 40px;
   padding-bottom: 60px;
-
-  h2 { font-size: 1.6rem; margin-bottom: 24px; }
 }
 
 .project-grid {
@@ -440,7 +439,7 @@ a {
   color: var(--text-muted);
   padding: 40px 0;
   background: var(--bg);
-  font-family: "JetBrains Mono", monospace;
+  font-family: "Manrope", Arial, sans-serif;
   font-size: 0.85rem;
 }
 
@@ -496,7 +495,7 @@ a {
     @include glass(rgba(10, 10, 10, 0.45), rgba(255, 255, 255, 0.14));
     position: absolute;
     top: 12px; left: 12px;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Manrope", Arial, sans-serif;
     font-size: 0.68rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -601,7 +600,7 @@ a {
 }
 
 .project-meta {
-  font-family: "JetBrains Mono", monospace;
+  font-family: "Manrope", Arial, sans-serif;
   font-size: 0.78rem;
 
   p { margin-bottom: 20px; }
@@ -749,7 +748,7 @@ a {
 .back-link {
   display: inline-block;
   color: var(--text-muted);
-  font-family: "JetBrains Mono", monospace;
+  font-family: "Manrope", Arial, sans-serif;
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -870,7 +869,7 @@ a {
   border-top: 1px solid var(--border);
   padding: 26px 0;
   color: var(--text-muted);
-  font-family: "JetBrains Mono", monospace;
+  font-family: "Manrope", Arial, sans-serif;
   font-size: 0.75rem;
   letter-spacing: 0.02em;
 }
