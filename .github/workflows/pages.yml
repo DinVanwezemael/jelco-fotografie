@@ -29,6 +29,15 @@ jobs:
       - name: Regenerate _projects/
         run: python3 scripts/generate_projects.py
 
+      - name: Install Pillow
+        run: pip install pillow
+
+      # Enforces image weight for BOTH authoring pipelines, including CMS uploads that
+      # arrive full-size from a phone. Rewrites the ephemeral checkout only — the
+      # full-resolution originals stay untouched in git.
+      - name: Optimize images
+        run: python3 scripts/optimize_images.py
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -43,6 +52,19 @@ jobs:
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
+
+      # Objective migration trigger: GitHub Pages caps a published site at 1 GB. Failing at
+      # 80% gives us room to act (see "Hosting & when to migrate" in CLAUDE.md) instead of
+      # discovering the ceiling when a deploy is rejected.
+      - name: Check published site size
+        run: |
+          limit_kb=$((800 * 1024))
+          size_kb=$(du -sk _site | cut -f1)
+          echo "Published site size: $((size_kb / 1024)) MB (limit $((limit_kb / 1024)) MB)"
+          if [ "$size_kb" -gt "$limit_kb" ]; then
+            echo "::error::_site exceeds 80% of the GitHub Pages 1 GB cap. Time to migrate to Cloudflare Pages — see CLAUDE.md."
+            exit 1
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
