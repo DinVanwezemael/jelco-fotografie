@@ -76,7 +76,7 @@ def build_front_matter(name: str, info: dict, images: list, source_folder: str) 
 
     lines = ["---", "layout: project", f'title: "{yaml_escape(title)}"']
 
-    for key in ("categorie", "locatie", "datum", "samenvatting"):
+    for key in ("categorie", "datum", "samenvatting"):
         if key in fields:
             lines.append(f'{key}: "{yaml_escape(fields[key])}"')
 

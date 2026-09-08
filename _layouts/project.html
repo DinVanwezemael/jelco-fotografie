@@ -1,21 +1,15 @@
 ---
 layout: default
 ---
-<section class="project-hero" style="background-image: url('{{ page.images | first | relative_url }}');">
+<section class="page-hero">
   <div class="wrap">
     <h1>{{ page.title }}</h1>
-    {% if page.datum %}
-    <div class="hero-glass-meta data-strip">
-      <span>{{ page.datum }}</span>
-    </div>
-    {% endif %}
   </div>
 </section>
 
 <section class="project-body">
   <div class="wrap project-layout">
     <aside class="project-meta">
-      {% if page.categorie %}<p><span>Categorie</span><strong>{{ page.categorie }}</strong></p>{% endif %}
       {% if page.datum %}<p><span>Datum</span><strong>{{ page.datum }}</strong></p>{% endif %}
     </aside>
     <div class="project-description">

@@ -1,0 +1,16 @@
+# Klanten en partners — de logo's op /klanten-en-partners/
+#
+# Elk item heeft:
+#   naam  — verplicht, wordt de alt-tekst van het logo
+#   logo  — verplicht, pad naar het bestand in assets/images/partners/
+#   url   — optioneel; met een url is het logo klikbaar en opent het in een nieuw tabblad,
+#           zonder url wordt het logo gewoon getoond
+#
+# Verwijder de # hieronder en pas aan om te beginnen:
+#
+# - naam: "911 Works Hasselt"
+#   logo: /assets/images/partners/911-works.png
+#   url: https://911works.be
+#
+# - naam: "Een klant zonder website"
+#   logo: /assets/images/partners/klant.png

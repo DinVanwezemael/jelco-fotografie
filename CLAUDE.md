@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Static Jekyll website for **Jelco Fotografie**, a Belgian photographer specializing in automotive, motorsport, architecture, and interior photography, plus print sales. Hosted on GitHub Pages at `https://jelcofotografie.be`. The site is in Dutch (nl-BE).
 
-Portfolio is organized into seven fixed categories, each with its own nav link and listing page at `/projecten/<slug>/`: Automotive, Motorsport, Architectuur, Interieur, Prints, Varia, Klanten en partners. A project's `Categorie` field in `ProjectInfo.md` must exactly match one of these seven values (case-sensitive) to appear on its category page — otherwise it's only visible on the general `/projecten/` overview.
+Portfolio is organized into six fixed categories, each with its own nav link and listing page at `/projecten/<slug>/`: Automotive, Motorsport, Architectuur, Interieur, Prints, Varia. A project's `Categorie` field in `ProjectInfo.md` must exactly match one of these six values (case-sensitive) to appear on its category page — otherwise it's only visible on the general `/projecten/` overview.
+
+"Klanten en partners" is a nav link too, but it is **not** a project category — it is a standalone page at `/klanten-en-partners/` showing a grid of clickable partner logos (see "Klanten en partners page" below).
 
 ## Commands
 
@@ -65,7 +67,7 @@ Uitgelicht: Ja
 Langere beschrijving als body...
 ```
 
-`Categorie` must be one of: `Automotive`, `Motorsport`, `Architectuur`, `Interieur`, `Prints`, `Varia`, `Klanten en partners`.
+`Categorie` must be one of: `Automotive`, `Motorsport`, `Architectuur`, `Interieur`, `Prints`, `Varia`.
 
 `Uitgelicht` (`Ja`/`Yes`/`True`/`1`, case-insensitive) controls whether the project appears in the curated photo grid on the homepage (an unlabeled section, formerly headed "Uitgelicht") — this is a manual curation flag, not automatic (the homepage does **not** just show the most recent projects). Omit it, or set it to anything else, to keep a project off the homepage; it's still reachable via its category page and `/projecten/`.
 
@@ -86,31 +88,85 @@ Setup (documented in full in the admin repo's own README):
 
 `assets/cms-projects/` is a plain static folder — no entry needed in `_config.yml`'s `exclude` list, since it's meant to be included in the built site.
 
+### Klanten en partners page
+
+`/klanten-en-partners/` (`klanten-en-partners.md` → `_layouts/partners.html`) is a plain grid of
+partner/client logos, **not** a project category. It is driven entirely by `_data/partners.yml`,
+a flat YAML list where each entry has:
+
+- `naam` — required, becomes the logo's `alt` text
+- `logo` — required, path to the file under `assets/images/partners/`
+- `url` — optional; with a `url` the logo renders as an `<a target="_blank" rel="noopener">`, without one it renders as a non-clickable `<div>`
+
+The shipped file contains only commented-out examples, so the page shows an `.empty-state`
+message until real entries are added. A YAML file of pure comments parses to `nil`, hence the
+`{% unless partners.size > 0 %}` guard in the layout rather than a plain `size == 0` test.
+
+`assets/images/partners/` sits under `assets/images`, one of `optimize_images.py`'s `TARGET_DIRS`,
+so logo weight is enforced in CI like every other image. Prefer SVG or transparent PNG — the grid
+boxes are a fixed `3 / 2` aspect ratio with `object-fit: contain`, so logos of mixed proportions
+line up without cropping.
+
 ### Homepage intro animation
 
 `_layouts/home.html` has an optional one-time intro sequence, active whenever `assets/images/hero/` contains **one or more** images (any of `.jpg`/`.jpeg`/`.png`/`.webp`/`.svg`, enumerated at build time via `site.static_files` — no Python involved, and no fixed count required). Alphabetical filename order = playback order; the last file also becomes the **permanent** hero background photo behind the title/subtitle/button (via `.hero.has-photo`), whether or not the intro animation itself is currently playing. With zero files present, the homepage falls back to today's plain hero — nothing breaks, the feature is simply inert until at least one photo exists.
 
 Sequence when active: a small centered frame fades in → cycles through all photos via a vertical "push" (each pushes the previous one off, driven by JS setting `translateY` per step, not a CSS `steps()` animation, so there's a single source of truth for the timeline; with only one photo the push loop is a no-op and the frame just holds on it) → holds on the last photo → grows to fill `.hero`'s **measured** bounding box (`getBoundingClientRect()`, not hardcoded viewport units — `.site-header` is `position: sticky`, so `.hero` doesn't actually start at the viewport top; growing to raw `100vw/100vh` would visibly jump at the handoff) → fades out to reveal the real `.hero` underneath, which shows the identical photo at the identical crop, so the handoff reads as seamless. Plays once per `sessionStorage`; skipped entirely (final state shown immediately) on repeat homepage visits in the same session, under `prefers-reduced-motion: reduce`, or if `.hero` isn't currently in the viewport (e.g. homepage opened via `#anchor`). Skippable anytime via click/tap or wheel/touchmove (not `scroll` — the body is `position: fixed` during the intro, so native scroll events never fire).
 
-Keep any hero photos web-sized (~1600-2000px long edge, well under ~400KB each) — all of them load eagerly with no lazy-loading safety net, since the intro needs them all available immediately.
+Hero photos are the heaviest thing the site serves: all of them load eagerly with no lazy-loading safety net, since the intro needs them all available immediately. Aim for ~1600-2000px long edge and well under ~400KB each, but this is now a target rather than something you must get right by hand — `scripts/optimize_images.py` enforces it at build time (see CI/CD below). Keep the folder small (~6 images); the budget is the *total* eager download, which no amount of per-file compression fixes.
 
 ### Layout hierarchy
 
 - `default.html` — base HTML shell (head, sticky header, footer, mobile nav toggle JS)
 - `home.html` → `default.html` — homepage
-- `project.html` → `default.html` — project detail with hero, metadata sidebar, auto gallery
+- `project.html` → `default.html` — project detail: plain title header (no photo banner), metadata sidebar, auto gallery
 - `page.html` → `default.html` — generic content pages
 - `projects.html` → `default.html` — project listing page
+- `partners.html` → `default.html` — the `/klanten-en-partners/` logo grid
 
 ### Styling
 
 All CSS lives in a single file: `assets/css/style.scss`. No build tool — Jekyll compiles the SCSS directly.
 
-Design system: white background (`--bg: #ffffff`) with a dark olive brand accent (`--accent: #21241c`, sampled from `assets/images/logo.jpg`'s background — also reused as the base `--text` color). Buttons, cards, and tag chips are rounded; hairline dividers throughout. A single font family, Manrope, is used everywhere — headings/nav/buttons at weight 800, body text at regular/medium, metadata (`.data-strip` class — category/date, styled uppercase with wide letter-spacing and a muted color) at regular weight — loaded via Google Fonts. Elements overlaid on photos (project hero title, card title/tag) use the fixed `--on-image` light color instead of `--text`, since they always sit on a dark photo scrim regardless of page theme — don't invent fake camera EXIF or print-edition numbers here; only real front-matter fields (`categorie`/`datum`) are shown. The header logo (`.logo-mark`) renders `assets/images/logo.jpg` next to the text wordmark. Responsive breakpoints at 980 px (nav collapses to hamburger) and 680 px (grids go single-column).
+Design system: white background (`--bg: #ffffff`) with a dark olive brand accent (`--accent: #21241c`, sampled from `assets/images/logo.jpg`'s background — also reused as the base `--text` color). Buttons, cards, and tag chips are rounded; hairline dividers throughout. A single font family, Manrope, is used everywhere — headings/nav/buttons at weight 800, body text at regular/medium, metadata (`.data-strip` class — category/date, styled uppercase with wide letter-spacing and a muted color) at regular weight — loaded via Google Fonts. Elements overlaid on photos (card title/tag) use the fixed `--on-image` light color instead of `--text`, since they always sit on a dark photo scrim regardless of page theme — don't invent fake camera EXIF or print-edition numbers here; only real front-matter fields are shown (`categorie`+`datum` on project cards, `datum` alone in the project detail sidebar). The header is a text wordmark only — `assets/images/logo.jpg` is still the favicon and the source of `--accent`, but it is no longer rendered in the header. Responsive breakpoints at 980 px (nav collapses to hamburger) and 680 px (grids go single-column).
 
 ### CI/CD
 
 GitHub Actions (`.github/workflows/pages.yml`) on push to `main`:
 1. Runs `python3 scripts/generate_projects.py`
-2. Runs `bundle exec jekyll build`
-3. Deploys to GitHub Pages
+2. Runs `python3 scripts/optimize_images.py` (after `pip install pillow`)
+3. Runs `bundle exec jekyll build`
+4. Fails the build if `_site` exceeds 800 MB
+5. Deploys to GitHub Pages
+
+**Step 2 is the only place image weight is enforced.** It resizes anything over 2000px on
+its long edge and re-compresses JPEGs to quality 82, rewriting files *in the ephemeral CI
+checkout* — full-resolution originals stay untouched in git, and only the published `_site`
+carries web-sized copies. It has to run in CI rather than as a local pre-commit habit,
+because the CMS pipeline uploads phone-camera originals straight through the GitHub API,
+where no local tool ever gets a chance to run. The script is idempotent (it discards a
+rewrite that saves less than 5%), so re-running it never compounds compression artefacts.
+
+To preview its effect without touching anything: `python3 scripts/optimize_images.py --dry-run`.
+
+### Hosting & when to migrate
+
+The site is on **GitHub Pages deliberately**, not by default. It's free (unlimited Actions
+minutes on a public repo), the pipeline above already works, and the site sits far under the
+1 GB published-site cap. Netlify's free tier is strictly worse for this use case (300 build
+min/mo, billed overage) and a self-hosted runner isn't free at all.
+
+The reason *not* to move to Cloudflare Pages today is specific: DNS for `jelcofotografie.be`
+is at the registrar, and Cloudflare Pages needs the apex domain, which requires moving
+nameservers to Cloudflare. That move drags the domain's MX/email records with it — a real
+risk to business email, in exchange for headroom we don't need yet.
+
+**Migrate when either of these fires:**
+- The "Check published site size" step fails (`_site` past 800 MB).
+- GitHub emails about the ~100 GB/month bandwidth soft limit.
+
+**Escape hatch when it does:** keep this workflow's build steps exactly as they are and swap
+only the deploy step for `cloudflare/wrangler-action` running `wrangler pages deploy _site`.
+Cloudflare Pages' free tier has unlimited bandwidth and no practical site-size cap. Budget
+the nameserver move separately, and copy the existing MX records into Cloudflare DNS
+*before* changing nameservers at the registrar.
