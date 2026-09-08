@@ -107,18 +107,10 @@ so logo weight is enforced in CI like every other image. Prefer SVG or transpare
 boxes are a fixed `3 / 2` aspect ratio with `object-fit: contain`, so logos of mixed proportions
 line up without cropping.
 
-### Homepage intro animation
-
-`_layouts/home.html` has an optional one-time intro sequence, active whenever `assets/images/hero/` contains **one or more** images (any of `.jpg`/`.jpeg`/`.png`/`.webp`/`.svg`, enumerated at build time via `site.static_files` — no Python involved, and no fixed count required). Alphabetical filename order = playback order; the last file also becomes the **permanent** hero background photo behind the title/subtitle/button (via `.hero.has-photo`), whether or not the intro animation itself is currently playing. With zero files present, the homepage falls back to today's plain hero — nothing breaks, the feature is simply inert until at least one photo exists.
-
-Sequence when active: a small centered frame fades in → cycles through all photos via a vertical "push" (each pushes the previous one off, driven by JS setting `translateY` per step, not a CSS `steps()` animation, so there's a single source of truth for the timeline; with only one photo the push loop is a no-op and the frame just holds on it) → holds on the last photo → grows to fill `.hero`'s **measured** bounding box (`getBoundingClientRect()`, not hardcoded viewport units — `.site-header` is `position: sticky`, so `.hero` doesn't actually start at the viewport top; growing to raw `100vw/100vh` would visibly jump at the handoff) → fades out to reveal the real `.hero` underneath, which shows the identical photo at the identical crop, so the handoff reads as seamless. Plays once per `sessionStorage`; skipped entirely (final state shown immediately) on repeat homepage visits in the same session, under `prefers-reduced-motion: reduce`, or if `.hero` isn't currently in the viewport (e.g. homepage opened via `#anchor`). Skippable anytime via click/tap or wheel/touchmove (not `scroll` — the body is `position: fixed` during the intro, so native scroll events never fire).
-
-Hero photos are the heaviest thing the site serves: all of them load eagerly with no lazy-loading safety net, since the intro needs them all available immediately. Aim for ~1600-2000px long edge and well under ~400KB each, but this is now a target rather than something you must get right by hand — `scripts/optimize_images.py` enforces it at build time (see CI/CD below). Keep the folder small (~6 images); the budget is the *total* eager download, which no amount of per-file compression fixes.
-
 ### Layout hierarchy
 
 - `default.html` — base HTML shell (head, sticky header, footer, mobile nav toggle JS)
-- `home.html` → `default.html` — homepage
+- `home.html` → `default.html` — homepage: a `.page-hero` title, then the curated (`uitgelicht: true`) project grid — bare photos whose title/date/category only appear on hover
 - `project.html` → `default.html` — project detail: plain title header (no photo banner), metadata sidebar, auto gallery
 - `page.html` → `default.html` — generic content pages
 - `projects.html` → `default.html` — project listing page

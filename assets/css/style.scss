@@ -48,18 +48,6 @@
   --learn-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   --font-display: "Manrope", Arial, sans-serif;
-
-  /* Atmospheric grade used on photo heroes — anchored on --accent and
-     --border so it reads as this site's palette, not an imported one. */
-  --gradient-atmosphere: linear-gradient(
-    180deg,
-    #17140d 0%,
-    #21241c 14%,
-    #46566b 40%,
-    #93a8bf 62%,
-    #d8cfbd 84%,
-    #ffffff 100%
-  );
 }
 
 * { box-sizing: border-box; }
@@ -229,141 +217,6 @@ a {
       span:nth-child(2) { opacity: 0; }
       span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
     }
-  }
-}
-
-/* Hero (home) */
-.hero {
-  position: relative;
-  padding: 110px 0 60px;
-  text-align: center;
-
-  h1 {
-    font-size: clamp(2.6rem, 6vw, 4.2rem);
-    margin-bottom: 18px;
-  }
-
-  .lead {
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    max-width: 560px;
-    margin: 0 auto 22px;
-  }
-
-  .data-strip {
-    display: block;
-    margin-bottom: 34px;
-  }
-
-  &.has-photo {
-    min-height: 100vh;
-    min-height: 100dvh;
-    padding: 130px 0;
-    display: flex;
-    align-items: center;
-    background-size: cover;
-    background-position: center;
-
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(8, 8, 8, 0.35);
-      pointer-events: none;
-    }
-
-    &::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: var(--gradient-atmosphere);
-      opacity: 0.45;
-      mix-blend-mode: multiply;
-      pointer-events: none;
-    }
-
-    .wrap { position: relative; z-index: 1; width: 100%; }
-
-    h1 {
-      color: var(--on-image);
-      font-size: clamp(4rem, 15vw, 13rem);
-      font-weight: 700;
-      line-height: 0.95;
-      margin-bottom: 0;
-    }
-  }
-
-  &.js-intro-entrance {
-    h1 {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.6s var(--ease-smooth), transform 0.6s var(--ease-smooth);
-    }
-
-    &.intro-revealed h1 { opacity: 1; transform: translateY(0); }
-  }
-}
-
-/* Homepage intro animation */
-.hero-intro {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: var(--bg);
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transition: opacity 0.6s var(--ease-smooth), visibility 0.6s;
-
-  &[hidden] { display: none; }
-
-  &.fading {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-}
-
-.hero-intro-frame {
-  --intro-frame-w: 200px;
-  --intro-frame-h: 260px;
-  position: fixed;
-  top: calc(50% - (var(--intro-frame-h) / 2));
-  left: calc(50% - (var(--intro-frame-w) / 2));
-  width: var(--intro-frame-w);
-  height: var(--intro-frame-h);
-  overflow: hidden;
-  opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 0.5s var(--ease-smooth), transform 0.5s var(--ease-smooth),
-              top 0.9s var(--ease-smooth), left 0.9s var(--ease-smooth),
-              width 0.9s var(--ease-smooth), height 0.9s var(--ease-smooth);
-
-  .hero-intro.frame-in & {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.hero-intro-strip {
-  position: relative;
-  width: 100%;
-  height: 100%;
-
-  img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: translateY(100%);
-    transition: transform 0.2s var(--ease-smooth);
-
-    &:first-child { transform: translateY(0); }
-  }
-
-  .hero-intro.growing & img:not(:last-child) {
-    display: none;
   }
 }
 
@@ -545,6 +398,17 @@ a.partner-card {
 }
 
 .featured-projects .project-card:hover .project-card-tag {
+  opacity: 1;
+}
+
+/* Uitgelicht cards (home) — title/date are hidden by default and fade in
+   on hover, so the grid reads as bare photos until you interact. */
+.featured-projects .project-card-info {
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.featured-projects .project-card:hover .project-card-info {
   opacity: 1;
 }
 
@@ -945,7 +809,6 @@ a.partner-card {
 
 @media (prefers-reduced-motion: reduce) {
   .project-card img { transition: none; }
-  .hero-intro { display: none !important; }
   .lightbox, .site-header .site-nav { transition: none !important; }
   .featured-projects .project-card .project-card-tag { transition: opacity 0.2s ease; }
 }
